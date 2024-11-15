@@ -3,7 +3,7 @@ import numpy as np
 from yolodetect import YoloDetect
 
 # Khởi tạo video capture và mô hình YOLO
-video = cv2.VideoCapture('E:/hung/prj/a.mp4')  # Đọc video từ đường dẫn
+video = cv2.VideoCapture('E:/hung/prj/Tainhanh.net_YouTube_Bedroom-Fire-Test_Media_ezJ6SorlpJo_001_480p.mp4')  # Đọc video từ đường dẫn
 model = YoloDetect(detect_class="fire")
 
 # Kích hoạt chế độ phát hiện ngay lập tức

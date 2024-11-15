@@ -11,7 +11,7 @@ class YoloDetect:
     def __init__(self, detect_class="fire", frame_width=1280, frame_height=720):
         # Thiết lập các tham số
         self.model_file = "E:/hung/prj/results/yolov10_training/weights/best.pt"  # Đường dẫn tới tệp .pt của YOLOv10
-        self.conf_threshold = 0.5
+        self.conf_threshold = 0.05
         self.detect_class = detect_class
         self.frame_width = frame_width
         self.frame_height = frame_height
@@ -21,15 +21,18 @@ class YoloDetect:
         self.alert_telegram_each = 15  # giây giữa các lần cảnh báo qua Telegram
 
     def draw_prediction(self, img, class_id, x, y, x_plus_w, y_plus_h):
-        # Vẽ khung và nhãn cho đối tượng phát hiện
+        img_height, img_width = img.shape[:2]
+        x, y = max(0, x), max(0, y)
+        x_plus_w, y_plus_h = min(x_plus_w, img_width), min(y_plus_h, img_height)
+        
         label = self.classes[class_id]
         color = (0, 255, 0)
         cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
-        cv2.putText(img, label, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
-        # Kích hoạt cảnh báo nếu phát hiện "fire"
+        cv2.putText(img, label, (x , y ), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        
         img = self.alert(img)
         return img
+
 
     def alert(self, img):
         # Hiển thị cảnh báo trên khung hình và gửi thông báo qua Telegram
