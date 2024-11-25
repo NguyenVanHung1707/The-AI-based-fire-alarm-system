@@ -3,7 +3,7 @@ from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 import cv2
 import numpy as np
-from telegram_utils import send_telegram
+from apt_utils import send_api
 import datetime
 import threading
 
@@ -42,7 +42,7 @@ class YoloDetect:
         if (self.last_alert is None) or ((datetime.datetime.now() - self.last_alert).total_seconds() > self.alert_telegram_each):
             self.last_alert = datetime.datetime.now()
             cv2.imwrite("alert.png", cv2.resize(img, dsize=None, fx=0.2, fy=0.2))
-            threading.Thread(target=send_telegram).start()  # Gửi trong luồng mới để không làm chậm luồng chính
+            threading.Thread(target=send_api).start()  # Gửi trong luồng mới để không làm chậm luồng chính
 
         return img
 

@@ -1,31 +1,37 @@
 import cv2
 import numpy as np
+from imutils.video import VideoStream
 from yolodetect import YoloDetect
 
-# Khởi tạo video capture và mô hình YOLO
-video = cv2.VideoCapture('E:/hung/prj/Tainhanh.net_YouTube_Bedroom-Fire-Test_Media_ezJ6SorlpJo_001_480p.mp4')  # Đọc video từ đường dẫn
+# Khởi tạo video stream và mô hình YOLO
+video = VideoStream(src=0).start()
 model = YoloDetect(detect_class="fire")
 
-# Kích hoạt chế độ phát hiện ngay lập tức
-detect = True
+detect = False
 
 while True:
-    ret, frame = video.read()  # Đọc khung hình từ video
-    if not ret:
-        print("Không thể đọc khung hình từ video.")
+    frame = video.read()
+    if frame is None:
+        print("Không thể đọc khung hình từ camera.")
         break
+
+    # Lật khung hình để phản chiếu theo chiều ngang
+    frame = cv2.flip(frame, 1)
 
     # Nếu kích hoạt chế độ phát hiện, chạy phát hiện trên toàn khung hình
     if detect:
         frame = model.detect(frame=frame)
 
     # Hiển thị khung hình lên màn hình
-    cv2.imshow("Fire Detection", frame)
+    cv2.imshow("Intrusion Warning", frame)
 
-    # Dừng video capture và đóng các cửa sổ hiển thị khi video kết thúc
-    if cv2.waitKey(1) & 0xFF == ord('q'):  # Nhấn 'q' để thoát
+    # Nhận lệnh từ bàn phím
+    key = cv2.waitKey(1)
+    if key == ord('q'):  # Nhấn 'q' để thoát
         break
+    elif key == ord('d'):  # Nhấn 'd' để bắt đầu phát hiện
+        detect = True
 
-# Dừng video capture và đóng các cửa sổ hiển thị
-video.release()
+# Dừng video stream và đóng các cửa sổ hiển thị
+video.stream.release()
 cv2.destroyAllWindows()
